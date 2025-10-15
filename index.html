@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jesús Ricardo Martínez Urrutia — Cybersecurity • SOC Tier‑1</title>
+  <meta name="description" content="Security+ certified IT support technician pivoting to SOC Tier‑1. Splunk & FortiGate triage, Python VirusTotal automation, weekly Nessus scans. Mexico City." />
+  <meta property="og:title" content="Jesús Ricardo Martínez Urrutia — Cybersecurity" />
+  <meta property="og:description" content="Security+ (Mar 2025), SOC‑minded support engineer. Splunk • Nessus • FortiGate • Python • NixOS" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%235277C3'/><path d='M68 30 50 18 32 30v20l18 12 18-12V30Z' fill='%23E6F0FF'/></svg>'>
+  <style>
+    :root{
+      --bg:#0d1220;
+      --panel:#121a2e;
+      --ink:#e7ecff;
+      --muted:#b8c3e6;
+      --line:#233053;
+      --accent:#5277C3;
+      --accent-2:#7EBAE4;
+      --ok:#14b8a6;
+      --chip:#1a2240;
+      --shadow:0 12px 30px rgba(0,0,0,.35);
+      --radius:16px;
+      --maxw: 1060px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 800px at 10% -10%, rgba(126,186,228,0.18), transparent 60%),
+        radial-gradient(900px 700px at 100% 10%, rgba(82,119,195,0.25), transparent 60%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.6;
+    }
+    a{color:var(--accent)}
+    a:hover{text-decoration:none; box-shadow:0 1px 0 var(--accent)}
+    .wrap{max-width:var(--maxw);margin-inline:auto;padding:32px}
+    header.hero{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;margin:8px 0 14px}
+    .avatar{width:92px;height:92px;border-radius:24px;background:linear-gradient(135deg, var(--accent), var(--accent-2));padding:2px;box-shadow:var(--shadow)}
+    .avatar span{display:block;width:100%;height:100%;border-radius:22px;background:#0b1020 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="92" height="92" viewBox="0 0 24 24" fill="none" stroke="%23b8c3e6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>') center/40% no-repeat}
+    .title h1{margin:0;font-size:clamp(26px,5vw,44px);line-height:1.1}
+    .title p{margin:6px 0;color:var(--muted)}
+    .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow)}
+    .btn:hover{transform:translateY(-1px)}
+    .btn--accent{background:linear-gradient(135deg, var(--accent), var(--accent-2));border:none}
+    section{margin:28px 0;background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+    section header{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,0.04), transparent)}
+    section header h2{margin:0;font-size:20px}
+    section .content{padding:18px 20px}
+    .terminal{background:#0a0f1e;border:1px solid #1b2442;border-radius:12px;padding:12px 14px;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;font-size:14px;color:#cfe0ff}
+    .prompt{color:#7EBAE4}
+    .chips{display:flex;flex-wrap:wrap;gap:10px}
+    .chip{background:var(--chip);border:1px solid #2b3a6a;color:#dbe6ff;padding:8px 12px;border-radius:999px;font-size:.95rem}
+    .xp{display:grid;gap:16px}
+    .xp-item{display:grid;gap:6px;padding:14px;border:1px dashed #2b355e;border-radius:12px}
+    .xp-item h3{margin:0;font-size:18px}
+    .xp-item .meta{color:var(--muted);font-size:.95rem}
+    .xp-item ul{margin:8px 0 0 18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+    .card h3{margin:0 0 6px 0;font-size:18px}
+    .card p{margin:6px 0 10px 0;color:var(--muted)}
+    .badge{display:inline-block;font-size:.85rem;padding:4px 8px;border-radius:999px;border:1px solid #2b3a6a;background:var(--chip);margin-right:6px}
+    form{display:grid;gap:10px}
+    input, textarea{width:100%;padding:12px 14px;background:#0c1122;border:1px solid #243259;color:var(--ink);border-radius:10px}
+    textarea{min-height:120px}
+    footer{margin:30px 0;color:var(--muted);text-align:center}
+    @media print{body{background:#fff;color:#111}section,.card{box-shadow:none;border-color:#ddd}.btn,.cta,.avatar{display:none!important}a{color:#0366d6}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero" aria-label="Header">
+      <div class="avatar" aria-hidden="true"><span></span></div>
+      <div class="title">
+        <h1>Jesús Ricardo Martínez Urrutia</h1>
+        <p>Security+ certified support engineer pivoting to <strong>SOC Tier‑1</strong> — Mexico City · <span style="color:var(--ok)">Open to opportunities</span></p>
+        <div class="terminal" role="region" aria-label="System info">
+          <div><span class="prompt">jesus@nixos</span>:~$ <span>neofetch</span></div>
+          <div>OS: <strong>NixOS</strong> • Also familiar: Ubuntu, ParrotOS, Kali</div>
+          <div>Key stack: Splunk · FortiGate · Nessus · Python · C#/.NET · AWS · Azure Sentinel</div>
+        </div>
+        <div class="cta">
+          <a class="btn btn--accent" href="#" onclick="window.print()">📄 Download PDF</a>
+          <a class="btn" href="mailto:ricardo.mtz.u117@gmail.com">✉️ Email</a>
+          <a class="btn" href="https://linkedin.com/in/jesus-ricardo-martinez-urrutia-3024731a5" target="_blank" rel="noopener">in/LinkedIn</a>
+          <a class="btn" href="https://github.com/jmartinez117" target="_blank" rel="noopener">🐙 GitHub</a>
+          <a class="btn" href="#contact">➤ Contact form</a>
+        </div>
+      </div>
+    </header>
+
+    <section id="about" aria-labelledby="h-about">
+      <header><h2 id="h-about">About</h2></header>
+      <div class="content about">
+        Security-certified (<strong>CompTIA Security+ — Mar 2025</strong>) IT support technician pivoting to SOC Tier‑1. Daily Splunk & FortiGate log triage, Python VirusTotal automation, and weekly Nessus scans on ~50 endpoints. Seeking a cyber‑ops or IT role to deepen detection & response skills while leveraging strong software (C++, C#/.NET) and data‑analysis experience.
+      </div>
+    </section>
+
+    <section id="skills" aria-labelledby="h-skills">
+      <header><h2 id="h-skills">Skills</h2></header>
+      <div class="content">
+        <h3>Security & Pentest</h3>
+        <div class="chips">
+          <span class="chip">Splunk</span>
+          <span class="chip">Nessus</span>
+          <span class="chip">FortiGate</span>
+          <span class="chip">nmap</span>
+          <span class="chip">Kali Linux</span>
+          <span class="chip">Burp Suite</span>
+          <span class="chip">Wireshark</span>
+          <span class="chip">Network & OSI model</span>
+        </div>
+        <h3 style="margin-top:14px">Cloud & DevSecOps</h3>
+        <div class="chips">
+          <span class="chip">AWS (IAM, Security Hub)</span>
+          <span class="chip">Azure (Sentinel)</span>
+          <span class="chip">Docker</span>
+          <span class="chip">NixOS</span>
+          <span class="chip">Linux (Ubuntu / Pop! / ParrotOS)</span>
+        </div>
+        <h3 style="margin-top:14px">Programming & Stack</h3>
+        <div class="chips">
+          <span class="chip">Python</span>
+          <span class="chip">PowerShell</span>
+          <span class="chip">C#/.NET</span>
+          <span class="chip">C++</span>
+          <span class="chip">React.js</span>
+          <span class="chip">SQL</span>
+          <span class="chip">Git</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="certs" aria-labelledby="h-certs">
+      <header><h2 id="h-certs">Certifications</h2></header>
+      <div class="content grid">
+        <article class="card">
+          <h3>CompTIA Security+</h3>
+          <p>Issued Mar 2025 — Code: ERCVSQ6QZF411L3X</p>
+          <a href="https://drive.google.com/drive/folders/1o5nJGSyM_Ri32rydH_0c52y61Bm_ry8K?usp=sharing" target="_blank" rel="noopener" class="badge">View Credential</a>
+        </article>
+        <article class="card">
+          <h3>Cambridge English C1 Advanced (CAE)</h3>
+          <p>Certificate of Advanced English</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="experience" aria-labelledby="h-xp">
+      <header><h2 id="h-xp">Experience</h2></header>
+      <div class="content xp">
+        <article class="xp-item">
+          <h3>Technical Support Engineer (Level 1 → Security‑Aware Tier 2) — ONESUPPORT</h3>
+          <div class="meta">May 2023 – Present · Mexico City (remote), US‑based ISP</div>
+          <ul>
+            <li>Resolve ~30 connectivity, OS and SaaS tickets per day; maintain SLA compliance consistently &gt;95%.</li>
+            <li>Frontline for security tickets — review FortiGate logs, flag suspicious IP traffic; open ~10 follow‑up cases/month for senior SOC analysts.</li>
+            <li>Run weekly Nessus Essentials scans on ~50 endpoints and deliver concise critical‑CVE reports to the sysadmin team.</li>
+            <li>Built a Python script to hash files and query VirusTotal, saving ~10 minutes on each malware ticket.</li>
+            <li>Assist network team with minor firewall rule changes (blocklist IPs, open ports for new services).</li>
+            <li>Authored 25 step‑by‑step knowledge‑base articles, boosting first‑call resolution by 10%.</li>
+          </ul>
+        </article>
+        <article class="xp-item">
+          <h3>Software Developer — PROMOIMPRESOS</h3>
+          <div class="meta">Sep 2019 – Feb 2023 · Mexico City</div>
+          <ul>
+            <li>Built a C#/WPF desktop app to automate order workflow, cutting manual entry by 70%.</li>
+            <li>Remediated a SQL‑injection flaw in a legacy PHP site and introduced Git version control.</li>
+            <li>Developed PowerShell backup scripts for SQL Server, reducing RPO to 15 minutes.</li>
+            <li>Trained employees, created logins, and configured Microsoft Active Directory.</li>
+          </ul>
+        </article>
+        <article class="xp-item">
+          <h3>Maintenance Electrician — Pharmapack</h3>
+          <div class="meta">2017 – 2018</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="education" aria-labelledby="h-edu">
+      <header><h2 id="h-edu">Education</h2></header>
+      <div class="content grid">
+        <article class="card">
+          <h3>B.S. Cybersecurity (Online) — Universidad Utel</h3>
+          <p>In progress — expected 2028. Focus: network defense, cryptography, security operations.</p>
+        </article>
+        <article class="card">
+          <h3>B.S. Data Science — Universidad del Valle de México</h3>
+          <p>Completed 2 years (4 semesters), 2025. Focus: statistics, data visualization, Python, SQL, ML intro.</p>
+        </article>
+        <article class="card">
+          <h3>B.S. Software Engineering — Universidad del Valle de México</h3>
+          <p>Completed 2 years (4 semesters), 2023 — GPA: 3.7. Focus: algorithms, OOP (Java/Python/C#), databases, architecture.</p>
+        </article>
+        <article class="card">
+          <h3>A.S. Electronics — Escuela Mexicana de Electricidad</h3>
+          <p>Graduated Sep 2019 — GPA: 3.8. Focus: digital systems, embedded programming, microcontrollers.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="languages" aria-labelledby="h-lang">
+      <header><h2 id="h-lang">Languages</h2></header>
+      <div class="content">
+        Spanish (native) · English C1 (CAE) · French A1
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="h-contact">
+      <header><h2 id="h-contact">Contact</h2></header>
+      <div class="content">
+        <form action="https://formspree.io/f/your-id" method="POST">
+          <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;padding:0">
+            <input type="text" name="name" placeholder="Your name" required />
+            <input type="email" name="email" placeholder="Your email" required />
+          </div>
+          <textarea name="message" placeholder="Your message" required></textarea>
+          <button class="btn btn--accent" type="submit">Send</button>
+          <p class="meta" style="color:var(--muted);margin:6px 0 0 0">Or email / call: <a href="mailto:ricardo.mtz.u117@gmail.com">ricardo.mtz.u117@gmail.com</a> • +52 56 5692 4847</p>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="y"></span> Jesús Ricardo Martínez Urrutia • Built with HTML/CSS, themed for NixOS.
+    </footer>
+  </div>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Jesús Ricardo Martínez Urrutia",
+    "address": {"@type":"PostalAddress","addressLocality":"Mexico City","addressCountry":"MX"},
+    "email": "mailto:ricardo.mtz.u117@gmail.com",
+    "telephone": "+525656924847",
+    "jobTitle": "Technical Support Engineer (Security‑aware)",
+    "knowsAbout": ["SOC Tier‑1","Splunk","FortiGate","Nessus","Python","NixOS"],
+    "sameAs": [
+      "https://www.linkedin.com/in/jesus-ricardo-martinez-urrutia-3024731a5",
+      "https://github.com/jmartinez117"
+    ]
+  }
+  </script>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
