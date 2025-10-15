@@ -4,277 +4,1601 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jesús R. Martínez Urrutia — NixOS Desktop • Portfolio</title>
-  <meta name="description" content="Interactive Linux desktop portfolio — open windows for About, Resume, Projects, and Contact.">
-  <meta property="og:title" content="Jesús R. Martínez Urrutia — NixOS Desktop">
-  <meta property="og:description" content="SOC‑minded support engineer • Splunk • Nessus • FortiGate • Python • NixOS">
+  <meta name="description" content="Interactive Linux desktop portfolio — login, dock, draggable windows (About, Resume, Projects, Contact, Settings, Mousepad, Terminal). Mexico City clock.">
+  <!-- Security headers via meta (best effort on GitHub Pages). We use a hash for the inline script to avoid 'unsafe-inline'. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'sha256-h2YOwJ3yRj9Gia3GDxljL6DpqOAjKIc8gJ8gnbNFV7c='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="color-scheme" content="dark light">
+  <!-- No external fonts or scripts; everything is self-contained. -->
+
   <style>
-    :root{
-      --bg-1:#0d1220; --bg-2:#0a1a2f; --accent:#5277C3; --accent-2:#7EBAE4;
-      --ink:#e7ecff; --muted:#b8c3e6; --line:#233053; --panel:#0f1b33; --panel-2:#101a30;
-      --win:#121f3b; --task:#0a1428; --ok:#14b8a6; --warn:#f59e0b; --bad:#ef4444;
-      --shadow:0 18px 50px rgba(0,0,0,.45);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--ink);
-      background:
-        radial-gradient(1200px 900px at 10% -10%, rgba(126,186,228,.22), transparent 60%),
-        radial-gradient(900px 700px at 100% 10%, rgba(82,119,195,.28), transparent 60%),
-        linear-gradient(120deg, var(--bg-1), var(--bg-2));
-      overflow:hidden;
-    }
-    /* Top Bar */
-    .topbar{
-      position:fixed;inset:0 0 auto 0;height:46px;display:flex;align-items:center;gap:12px;
-      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
-      border-bottom:1px solid var(--line);padding:0 12px;z-index:1000;
-      backdrop-filter: blur(8px);
-    }
-    .nixlogo{display:inline-flex;align-items:center;gap:10px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.18);border:1px solid var(--line)}
-    .nixlogo svg{width:22px;height:22px}
-    .title{font-weight:600}
-    .spacer{flex:1}
-    .status{display:flex;gap:10px;color:var(--muted);font-size:14px}
-    /* Dock */
-    .dock{
-      position:fixed;inset:auto 12px 58px auto;display:grid;gap:12px;
-      grid-auto-flow:row;justify-items:center;
-    }
-    .icon{
-      width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--panel),var(--panel-2));
-      border:1px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);cursor:pointer;
-    }
-    .icon:hover{transform:translateY(-2px)}
-    .icon svg{width:28px;height:28px}
-    .label{font-size:12px;color:var(--muted);margin-top:4px}
-    /* Windows */
-    .win{
-      position:absolute;top:90px;left:90px;width:min(920px, 86vw);max-height:70vh;display:grid;grid-template-rows:auto 1fr;
-      background:linear-gradient(180deg, rgba(255,255,255,.03), transparent), var(--win);
-      border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;
-    }
-    .win.hidden{display:none}
-    .titlebar{
-      display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.05), transparent);
-      cursor:move; user-select:none;
-    }
-    .tb-title{font-weight:600}
-    .tb-actions{margin-left:auto;display:flex;gap:8px}
-    .btn{width:12px;height:12px;border-radius:999px;border:1px solid var(--line);cursor:pointer}
-    .btn.close{background:var(--bad)} .btn.min{background:var(--warn)} .btn.max{background:var(--ok)}
-    .content{padding:16px;overflow:auto}
-    /* Cards/Chips */
-    .terminal{background:#0a0f1e;border:1px solid #1b2442;border-radius:12px;padding:12px 14px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;font-size:14px;color:#cfe0ff}
-    .prompt{color:#7EBAE4}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,.03), transparent), #0f1d38;border:1px solid var(--line);border-radius:14px;padding:16px}
-    .chips{display:flex;flex-wrap:wrap;gap:10px}
-    .chip{background:#111f3c;border:1px solid #2b3a6a;color:#dbe6ff;padding:8px 12px;border-radius:999px;font-size:.95rem}
-    .muted{color:var(--muted)}
-    .link{color:var(--accent)}
-    /* Taskbar */
-    .taskbar{
-      position:fixed;inset:auto 0 0 0;height:52px;display:flex;align-items:center;gap:10px;padding:0 10px;
-      background:linear-gradient(0deg, rgba(0,0,0,.2), transparent);
-      border-top:1px solid var(--line);
-      backdrop-filter: blur(8px);
-    }
-    .taskbtn{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,.18);
-      border:1px solid var(--line);color:var(--ink);cursor:pointer;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    }
-    .taskbtn.active{outline:2px solid var(--accent)}
-    /* Wallpaper helper text */
-    .center-intro{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none}
-    .center-intro .inner{background:rgba(0,0,0,.15);border:1px solid var(--line);padding:14px 18px;border-radius:12px}
-    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-    @media (max-width: 640px){
-      .dock{inset:auto 50% 68px auto;transform:translateX(50%);grid-auto-flow:column}
-      .win{top:70px;left:6vw;width:88vw;max-height:66vh}
-    }
+  
+/* =========================
+   NixOS Desktop UI theme (with comments)
+   ========================= */
+:root{
+  /* Primary palette — NixOS blues */
+  --bg-1:#0d1220; --bg-2:#0a1a2f;
+  --accent:#5277C3; --accent-2:#7EBAE4;
+  --ink:#e7ecff; --muted:#b8c3e6;
+  --line:#233053; --panel:#0f1b33; --panel-2:#101a30;
+  --win:#121f3b; --task:#0a1428;
+  --ok:#14b8a6; --warn:#f59e0b; --bad:#ef4444;
+  --shadow:0 18px 50px rgba(0,0,0,.45);
+}
+/* Alternate theme (Settings → toggle) */
+:root[data-theme="alt"]{
+  --accent:#ff7a18; --accent-2:#ffd166;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 900px at 10% -10%, rgba(126,186,228,.22), transparent 60%),
+    radial-gradient(900px 700px at 100% 10%, rgba(82,119,195,.28), transparent 60%),
+    linear-gradient(120deg, var(--bg-1), var(--bg-2));
+  overflow:hidden;
+}
+
+/* ----- Top bar shows Mexico City clock ----- */
+.topbar{
+  position:fixed;inset:0 0 auto 0;height:46px;display:flex;align-items:center;gap:12px;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+  border-bottom:1px solid var(--line);padding:0 12px;z-index:1000;
+  backdrop-filter: blur(8px);
+}
+.nixlogo{
+  display:inline-flex;align-items:center;gap:10px;padding:6px 10px;border-radius:10px;
+  background:rgba(0,0,0,.18);border:1px solid var(--line)
+}
+.nixlogo svg{width:22px;height:22px}
+.title{font-weight:600}
+.spacer{flex:1}
+.status{display:flex;gap:10px;color:var(--muted);font-size:14px}
+
+/* ----- Login screen (simple splash, no real auth) ----- */
+.hidden{display:none !important}
+.login{
+  position:fixed;inset:0;display:grid;place-items:center;z-index:1500;
+  background:
+    radial-gradient(1200px 900px at 10% -10%, rgba(126,186,228,.22), transparent 60%),
+    linear-gradient(160deg, #08101f, #0b1830);
+}
+.loginbox{
+  width:min(480px, 92vw);padding:22px;border-radius:16px;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), transparent), #0f1d38;
+  border:1px solid var(--line); box-shadow:var(--shadow);
+}
+.loginbox h1{margin:0 0 6px 0;font-size:22px}
+.input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b142b;color:var(--ink)}
+
+/* ----- Dock (launchers) ----- */
+.dock{
+  position:fixed;inset:auto 12px 58px auto;display:grid;gap:12px;
+  grid-auto-flow:row;justify-items:center;
+}
+.icon{
+  width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);cursor:pointer;
+}
+.icon:hover{transform:translateY(-2px)}
+.icon svg{width:28px;height:28px}
+.label{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* ----- Windows ----- */
+.win{
+  position:absolute;top:90px;left:8vw;width:84vw;max-height:70vh;display:grid;grid-template-rows:auto 1fr;
+  background:linear-gradient(180deg, rgba(255,255,255,.03), transparent), var(--win);
+  border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;
+}
+.titlebar{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.05), transparent);
+  cursor:move; user-select:none;
+}
+.tb-title{font-weight:600}
+.tb-actions{margin-left:auto;display:flex;gap:8px}
+.btn{width:12px;height:12px;border-radius:999px;border:1px solid var(--line);cursor:pointer}
+.btn.close{background:var(--bad)} .btn.min{background:var(--warn)} .btn.max{background:var(--ok)}
+.content{padding:16px;overflow:auto}
+.terminal{background:#0a0f1e;border:1px solid #1b2442;border-radius:12px;padding:12px 14px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;font-size:14px;color:#cfe0ff}
+.prompt{color:var(--accent-2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,.03), transparent), #0f1d38;border:1px solid var(--line);border-radius:14px;padding:16px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:#111f3c;border:1px solid #2b3a6a;color:#dbe6ff;padding:8px 12px;border-radius:999px;font-size:.95rem}
+
+/* ----- Taskbar ----- */
+.taskbar{
+  position:fixed;inset:auto 0 0 0;height:52px;display:flex;align-items:center;gap:10px;padding:0 10px;
+  background:linear-gradient(0deg, rgba(0,0,0,.2), transparent);
+  border-top:1px solid var(--line);
+  backdrop-filter: blur(8px);
+}
+.taskbtn{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,.18);
+  border:1px solid var(--line);color:var(--ink);cursor:pointer;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.taskbtn.active{outline:2px solid var(--accent)}
+
+/* ----- Center helper text ----- */
+.center-intro{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none}
+.center-intro .inner{background:rgba(0,0,0,.15);border:1px solid var(--line);padding:14px 18px;border-radius:12px;color:var(--muted)}
+
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+pre{white-space:pre-wrap;word-wrap:break-word}
+
+/* Mobile tweaks */
+@media (max-width: 640px){
+  .dock{inset:auto 50% 68px auto;transform:translateX(50%);grid-auto-flow:column}
+  .win{top:70px;left:6vw;width:88vw;max-height:66vh}
+}
+
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="nixlogo" title="NixOS">
-      <!-- Nix snowflake -->
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M33 9 18 35l9 16 8-14h15l-9-16h-8Z" fill="#7EBAE4"/><path d="M67 9h-8l-9 16h15l8 14 9-16L67 9Z" fill="#5277C3"/><path d="M82 35 67 61l-16 0 8-14-8-14h16l15 2Z" fill="#7EBAE4"/><path d="M67 61l15 26h-8l-16 0 8-14-8-14h9Z" fill="#5277C3"/><path d="M33 91h8l9-16H35l-8-14-9 16 15 14Z" fill="#7EBAE4"/><path d="M18 65l15-26h16l-8 14 8 14H33L18 65Z" fill="#5277C3"/>
-      </svg>
-      <span class="title">NixOS Desktop</span>
+  <!-- =========================
+       LOGIN SCREEN (splash; not real auth)
+       ========================= -->
+  <div id="login" class="login">
+    <div class="loginbox">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <!-- Official-like NixOS snowflake (SVG path) -->
+        <svg aria-hidden="true" width="32" height="32" viewBox="0 0 100 100">
+          <path d="M33 9 18 35l9 16 8-14h15l-9-16h-8Z" fill="#7EBAE4"/>
+          <path d="M67 9h-8l-9 16h15l8 14 9-16L67 9Z" fill="#5277C3"/>
+          <path d="M82 35 67 61l-16 0 8-14-8-14h16l15 2Z" fill="#7EBAE4"/>
+          <path d="M67 61l15 26h-8l-16 0 8-14-8-14h9Z" fill="#5277C3"/>
+          <path d="M33 91h8l9-16H35l-8-14-9 16 15 14Z" fill="#7EBAE4"/>
+          <path d="M18 65l15-26h16l-8 14 8 14H33L18 65Z" fill="#5277C3"/>
+        </svg>
+        <h1 style="margin:0">NixOS — Session</h1>
+      </div>
+      <p style="color:var(--muted);margin-top:0">Enter to open the desktop experience.</p>
+      <input id="password" class="input" type="password" placeholder="Password (not stored)">
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button id="login-btn" class="input" style="cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:1px solid var(--line)">Enter</button>
+      </div>
+      <p style="color:var(--muted);font-size:12px;margin-top:10px">Privacy note: this page is static and offline — no data leaves your browser.</p>
     </div>
-    <div class="spacer"></div>
-    <div class="status"><span>jesus@nixos</span><span>•</span><span id="clock"></span></div>
   </div>
 
-  <!-- Dock / Launchers -->
-  <div class="dock" aria-label="App Dock">
-    <div class="icon" data-open="#win-about" title="About">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-    </div><div class="label">About</div>
-    <div class="icon" data-open="#win-resume" title="Resume">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16l6-3 6 3V8z"/></svg>
-    </div><div class="label">Resume</div>
-    <div class="icon" data-open="#win-projects" title="Projects">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
-    </div><div class="label">Projects</div>
-    <div class="icon" data-open="#win-contact" title="Contact">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v12H5.17L4 17.17V4z"/><path d="m22 6-10 7L2 6"/></svg>
-    </div><div class="label">Contact</div>
-  </div>
-
-  <!-- Windows -->
-  <section class="win" id="win-about" role="dialog" aria-label="About window" style="left:80px;top:86px;">
-    <div class="titlebar"><span class="tb-title">About</span><div class="tb-actions"><div class="btn min" data-min="#win-about"></div><div class="btn max" data-max="#win-about"></div><div class="btn close" data-close="#win-about"></div></div></div>
-    <div class="content">
-      <div class="terminal" role="region" aria-label="System info">
-        <div><span class="prompt">jesus@nixos</span>:~$ neofetch</div>
-        <div>OS: <strong>NixOS</strong> • Also familiar: Ubuntu, ParrotOS, Kali</div>
-        <div>Key stack: Splunk · FortiGate · Nessus · Python · C#/.NET · AWS · Azure Sentinel</div>
+  <!-- =========================
+       DESKTOP
+       ========================= -->
+  <div id="desktop" class="hidden">
+    <!-- Top bar with NixOS logo and Mexico City time -->
+    <div class="topbar">
+      <div class="nixlogo" title="NixOS">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M33 9 18 35l9 16 8-14h15l-9-16h-8Z" fill="#7EBAE4"/>
+          <path d="M67 9h-8l-9 16h15l8 14 9-16L67 9Z" fill="#5277C3"/>
+          <path d="M82 35 67 61l-16 0 8-14-8-14h16l15 2Z" fill="#7EBAE4"/>
+          <path d="M67 61l15 26h-8l-16 0 8-14-8-14h9Z" fill="#5277C3"/>
+          <path d="M33 91h8l9-16H35l-8-14-9 16 15 14Z" fill="#7EBAE4"/>
+          <path d="M18 65l15-26h16l-8 14 8 14H33L18 65Z" fill="#5277C3"/>
+        </svg>
+        <span class="title">NixOS Desktop</span>
       </div>
-      <p class="muted" style="margin-top:12px">Security‑certified (<strong>CompTIA Security+ — Mar 2025</strong>) IT support technician pivoting to SOC Tier‑1. Daily Splunk &amp; FortiGate log triage, Python VirusTotal automation, and weekly Nessus scans on ~50 endpoints.</p>
-      <p>Links: <a class="link" href="mailto:ricardo.mtz.u117@gmail.com">Email</a> · <a class="link" href="https://linkedin.com/in/jesus-ricardo-martinez-urrutia-3024731a5" target="_blank" rel="noopener">LinkedIn</a> · <a class="link" href="https://github.com/jmartinez117" target="_blank" rel="noopener">GitHub</a></p>
+      <div class="spacer"></div>
+      <div class="status"><span>jesus@nixos</span><span>•</span><span id="clock"></span></div>
     </div>
-  </section>
 
-  <section class="win hidden" id="win-resume" role="dialog" aria-label="Resume window" style="left:190px;top:120px;">
-    <div class="titlebar"><span class="tb-title">Resume</span><div class="tb-actions"><div class="btn min" data-min="#win-resume"></div><div class="btn max" data-max="#win-resume"></div><div class="btn close" data-close="#win-resume"></div></div></div>
-    <div class="content">
-      <h3>Experience</h3>
-      <div class="card">
-        <strong>Technical Support Engineer (Level 1 → Security‑Aware Tier 2) — ONESUPPORT</strong>
-        <div class="muted">May 2023 – Present · Mexico City (remote), US‑based ISP</div>
-        <ul>
-          <li>Resolve ~30 connectivity, OS and SaaS tickets per day; SLA &gt;95%.</li>
-          <li>Review FortiGate logs; open ~10 follow‑up SOC cases/month.</li>
-          <li>Weekly Nessus Essentials scans on ~50 endpoints; report critical CVEs.</li>
-          <li>Python + VirusTotal automation saves ~10 min per malware ticket.</li>
-          <li>Assist with minor firewall rule changes; write 25 KB articles.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <strong>Software Developer — PROMOIMPRESOS</strong>
-        <div class="muted">Sep 2019 – Feb 2023 · Mexico City</div>
-        <ul>
-          <li>C#/WPF app automated order workflow (−70% manual entry).</li>
-          <li>Fixed SQL injection in legacy PHP; introduced Git.</li>
-          <li>PowerShell backups for SQL Server (RPO 15 min).</li>
-          <li>AD training, logins, configuration.</li>
-        </ul>
-      </div>
-      <h3>Skills</h3>
-      <div class="chips">
-        <span class="chip">Splunk</span><span class="chip">Nessus</span><span class="chip">FortiGate</span><span class="chip">Wireshark</span><span class="chip">Burp Suite</span><span class="chip">nmap</span>
-        <span class="chip">Python</span><span class="chip">PowerShell</span><span class="chip">C#/.NET</span><span class="chip">C++</span><span class="chip">React.js</span><span class="chip">SQL</span>
-        <span class="chip">AWS</span><span class="chip">Azure Sentinel</span><span class="chip">Docker</span><span class="chip">NixOS</span>
-      </div>
-      <h3>Education & Certifications</h3>
-      <div class="grid">
-        <div class="card"><strong>CompTIA Security+</strong><div class="muted">Issued Mar 2025 — Code: ERCVSQ6QZF411L3X</div><a class="link" href="https://drive.google.com/drive/folders/1o5nJGSyM_Ri32rydH_0c52y61Bm_ry8K?usp=sharing" target="_blank" rel="noopener">View Credential</a></div>
-        <div class="card"><strong>B.S. Cybersecurity — UTEL</strong><div class="muted">In progress — expected 2028.</div></div>
-        <div class="card"><strong>B.S. Data Science — UVM</strong><div class="muted">2 years completed (2025).</div></div>
-        <div class="card"><strong>B.S. Software Engineering — UVM</strong><div class="muted">2 years completed (2023) — GPA 3.7.</div></div>
-        <div class="card"><strong>A.S. Electronics — EME</strong><div class="muted">Grad Sep 2019 — GPA 3.8.</div></div>
-      </div>
-      <p class="muted">Languages: Spanish (native) · English C1 (CAE) · French A1</p>
+    <!-- Dock launchers (About, Resume, Projects, Contact, Terminal, Mousepad, Settings) -->
+    <div class="dock" aria-label="App Dock">
+      <div class="icon" data-open="#win-about" title="About">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </div><div class="label">About</div>
+
+      <div class="icon" data-open="#win-resume" title="Resume">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16l6-3 6 3V8z"/></svg>
+      </div><div class="label">Resume</div>
+
+      <div class="icon" data-open="#win-projects" title="Projects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </div><div class="label">Projects</div>
+
+      <div class="icon" data-open="#win-terminal" title="Terminal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 9l3 3-3 3M13 15h3"/></svg>
+      </div><div class="label">Terminal</div>
+
+      <div class="icon" data-open="#win-mousepad" title="Mousepad">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/></svg>
+      </div><div class="label">Mousepad</div>
+
+      <div class="icon" data-open="#win-settings" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V22a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H2a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.26 1.3.73 1.77.48.47 1.12.73 1.77.73H22a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div><div class="label">Settings</div>
+
+      <div class="icon" data-open="#win-contact" title="Contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v12H5.17L4 17.17V4z"/><path d="m22 6-10 7L2 6"/></svg>
+      </div><div class="label">Contact</div>
     </div>
-  </section>
 
-  <section class="win hidden" id="win-projects" role="dialog" aria-label="Projects window" style="left:320px;top:140px;">
-    <div class="titlebar"><span class="tb-title">Projects</span><div class="tb-actions"><div class="btn min" data-min="#win-projects"></div><div class="btn max" data-max="#win-projects"></div><div class="btn close" data-close="#win-projects"></div></div></div>
-    <div class="content">
-      <div class="grid">
+    <!-- Windows -->
+    <section class="win" id="win-about" style="top:86px;left:6vw" role="dialog" aria-label="About">
+      <div class="titlebar"><span class="tb-title">About</span><div class="tb-actions"><div class="btn min" data-min="#win-about"></div><div class="btn max" data-max="#win-about"></div><div class="btn close" data-close="#win-about"></div></div></div>
+      <div class="content">
+        <!-- Terminal style system info -->
+        <div class="terminal" role="region" aria-label="System info">
+          <div><span class="prompt">jesus@nixos</span>:~$ neofetch</div>
+          <div>OS: <strong>NixOS</strong> • Also familiar: Ubuntu, ParrotOS, Kali</div>
+          <div>Key stack: Splunk · FortiGate · Nessus · Python · C#/.NET · AWS · Azure Sentinel</div>
+        </div>
+        <p style="color:var(--muted);margin-top:12px">
+          Security‑certified (<strong>CompTIA Security+ — Mar 2025</strong>) IT support technician pivoting to SOC Tier‑1.
+          Daily Splunk &amp; FortiGate log triage, Python VirusTotal automation, and weekly Nessus scans on ~50 endpoints.
+        </p>
+        <p>Links: <a href="mailto:ricardo.mtz.u117@gmail.com" target="_blank">Email</a> ·
+           <a href="https://linkedin.com/in/jesus-ricardo-martinez-urrutia-3024731a5" target="_blank">LinkedIn</a> ·
+           <a href="https://github.com/jmartinez117" target="_blank">GitHub</a></p>
+      </div>
+    </section>
+
+    <section class="win hidden" id="win-resume" role="dialog" aria-label="Resume">
+      <div class="titlebar"><span class="tb-title">Resume</span><div class="tb-actions"><div class="btn min" data-min="#win-resume"></div><div class="btn max" data-max="#win-resume"></div><div class="btn close" data-close="#win-resume"></div></div></div>
+      <div class="content">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <button id="btn-struct" class="taskbtn">Structured view</button>
+          <button id="btn-raw" class="taskbtn">Verbatim (from PDF)</button>
+          <a class="taskbtn" href="resume.pdf" target="_blank">Open PDF</a>
+        </div>
+        <!-- Structured resume (curated highlights) -->
+        <div id="resume-struct">
+          <h3>Experience</h3>
+          <div class="card">
+            <strong>Technical Support Engineer (Level 1 → Security‑Aware Tier 2) — ONESUPPORT</strong>
+            <div class="muted">May 2023 – Present · Mexico City (remote), US‑based ISP</div>
+            <ul>
+              <li>Resolve ~30 connectivity, OS and SaaS tickets per day; SLA &gt;95%.</li>
+              <li>Review FortiGate logs; open ~10 follow‑up SOC cases/month.</li>
+              <li>Weekly Nessus Essentials scans on ~50 endpoints; report critical CVEs.</li>
+              <li>Python + VirusTotal automation saves ~10 min per malware ticket.</li>
+              <li>Assist with minor firewall rule changes; author 25 KB articles.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>Software Developer — PROMOIMPRESOS</strong>
+            <div class="muted">Sep 2019 – Feb 2023 · Mexico City</div>
+            <ul>
+              <li>C#/WPF app automated order workflow (−70% manual entry).</li>
+              <li>Fixed SQL injection in legacy PHP; introduced Git.</li>
+              <li>PowerShell backups for SQL Server (RPO 15 min).</li>
+              <li>Active Directory: training, logins, configuration.</li>
+            </ul>
+          </div>
+
+          <h3>Skills</h3>
+          <div class="chips">
+            <span class="chip">Splunk</span><span class="chip">Nessus</span><span class="chip">FortiGate</span><span class="chip">Wireshark</span>
+            <span class="chip">Burp Suite</span><span class="chip">nmap</span><span class="chip">Python</span><span class="chip">PowerShell</span>
+            <span class="chip">C#/.NET</span><span class="chip">C++</span><span class="chip">React.js</span><span class="chip">SQL</span>
+            <span class="chip">AWS</span><span class="chip">Azure Sentinel</span><span class="chip">Docker</span><span class="chip">NixOS</span>
+          </div>
+
+          <h3>Education & Certifications</h3>
+          <div class="grid">
+            <div class="card"><strong>CompTIA Security+</strong><div class="muted">Issued Mar 2025 — Code: ERCVSQ6QZF411L3X</div></div>
+            <div class="card"><strong>B.S. Cybersecurity — Universidad Utel</strong><div class="muted">In progress — expected 2028.</div></div>
+            <div class="card"><strong>B.S. Data Science — Universidad del Valle de México</strong><div class="muted">2 years completed (2025).</div></div>
+            <div class="card"><strong>B.S. Software Engineering — Universidad del Valle de México</strong><div class="muted">2 years completed (2023) — GPA 3.7.</div></div>
+            <div class="card"><strong>A.S. Electronics — Escuela Mexicana de Electricidad</strong><div class="muted">Grad Sep 2019 — GPA 3.8.</div></div>
+          </div>
+          <p class="muted">Languages: Spanish (native) · English C1 (CAE) · French A1</p>
+        </div>
+
+        <!-- Verbatim extraction from PDF to ensure 100% coverage -->
+        <div id="resume-raw" class="hidden">
+          <pre>JESUS
+
+RICARDO
+
+MARTÍNEZ
+
+URRUTIA
+
+
+
+Mexico
+
+City
+
+|
+
++52
+
+56
+
+5692
+
+4847
+
+|
+
+ricardo.mtz.u117@gmail.com
+
+LinkedIn:
+
+linkedin.com/in/jesus-ricardo-martinez-urrutia-3024731a5
+
+|
+
+GitHub:
+
+github.com/jmartinez117
+
+————————————————————————————————————-
+
+Professional
+
+Summary
+
+
+Security-certified
+
+(CompTIA
+
+Security+
+
+—
+
+Mar
+
+2025)
+
+IT
+
+support
+
+technician
+
+pivoting
+
+to
+
+SOC
+
+Tier
+‑
+1.
+
+Daily
+
+Splunk
+
+&
+
+FortiGate
+
+log
+
+triage,
+
+Python
+
+VirusT otal
+
+automation,
+
+and
+
+weekly
+
+Nessus
+
+scans
+
+on
+
+50
+
+endpoints.
+
+Seeking
+
+a
+
+cyber
+‑
+ops
+
+or
+
+IT
+
+role
+
+to
+
+deepen
+
+detection
+
+&
+
+response
+
+skills
+
+while
+
+leveraging
+
+strong
+
+software
+
+(C++,
+
+C#/.NET)
+
+and
+
+data
+‑
+analysis
+
+experience.
+
+
+Certifications
+
+
+-CompTIA
+
+Security+,
+
+issued
+
+Mar
+
+2025
+
+|
+
+Certificate
+
+code
+
+ERCVSQ6QZF41 1L3X
+
+https://drive.google.com/drive/folders/1o5nJGSyM_Ri32rydH_0c52y61Bm_ry8K?usp=shari
+
+ng
+
+
+
+-Cambridge
+
+English
+
+C1
+
+Advanced
+
+(CAE)
+
+
+
+Key
+
+Tools
+
+&
+
+Languages
+
+
+Security
+
+&
+
+Pentest:
+
+Splunk
+
+•
+
+Nessus
+
+•
+
+FortiGate
+
+•
+
+nmap
+
+•
+
+Kali
+
+Linux
+
+•
+
+Burp
+
+Suite
+
+•
+
+Wireshark
+
+•
+
+Deep
+
+Understanding
+
+of
+
+the
+
+Network
+
+and
+
+OSI
+
+model
+
+(TCP|UDP ,
+
+VPN,
+
+DNS,
+
+DHCP ,
+
+HTTP
+
+vs
+
+HTPS
+
+|
+
+HSTS
+
+|
+
+TLS
+
+|
+
+other)
+
+Cloud
+
+&
+
+DevSecOps:
+
+AWS
+
+(IAM,
+
+Security
+
+Hub)
+
+•
+
+Azure
+
+(Sentinel)
+
+•
+
+Docker
+
+•
+
+NixOS
+
+•
+
+Linux
+
+(Ubuntu/Pop!/ParrotOS)
+
+
+Programming
+
+&
+
+Stack:
+
+Python
+
+•
+
+PowerShell
+
+•
+
+C#/.NET
+
+•
+
+C++
+
+•
+
+React.js
+
+•
+
+SQL
+
+•
+
+Git
+
+
+Experience
+
+
+ONESUPPOR T
+
+–
+
+Mexico
+
+City
+
+(remote),
+
+US-based
+
+ISP
+
+
+Technical
+
+Support
+
+Engineer
+
+(Level
+
+1
+
+→
+
+Security-A ware
+
+Tier
+
+2)
+
+May
+
+2023
+
+–
+
+Present
+
+●
+
+Resolve
+
+~30
+
+connectivity ,
+
+OS
+
+and
+
+SaaS
+
+tickets
+
+daily;
+
+SLA
+
+compliance
+
+consistently
+
+>
+
+95
+
+%.
+
+
+●
+
+Direct
+
+Troubleshooting
+
+with
+
+clients,
+
+solving
+
+network
+
+issues,
+
+restoring
+
+and
+
+patching
+
+systems,
+
+providing
+
+IT
+
+support
+
+of
+
+any
+
+kind.
+
+●
+
+First
+
+point
+
+for
+
+security
+
+tickets
+
+—
+
+review
+
+FortiGate
+
+logs,
+
+flag
+
+suspicious
+
+IP
+
+traffic
+
+and
+
+open
+
+~10
+
+follow
+‑
+up
+
+cases
+
+per
+
+month
+
+for
+
+senior
+
+SOC
+
+analysts.
+
+
+●
+
+Run
+
+a
+
+weekly
+
+Nessus
+
+Essentials
+
+scan
+
+on
+
+~50
+
+endpoints
+
+and
+
+deliver
+
+a
+
+concise
+
+critical
+‑
+CVE
+
+report
+
+to
+
+the
+
+sysadmin
+
+team.
+
+
+●
+
+Wrote
+
+a
+
+Python
+
+script
+
+that
+
+hashes
+
+files
+
+and
+
+queries
+
+VirusT otal,
+
+saving
+
+~10
+
+minutes
+
+on
+
+
+each
+
+malware
+
+ticket.
+
+
+●
+
+Assist
+
+the
+
+network
+
+team
+
+with
+
+minor
+
+firewall
+
+rule
+
+changes
+
+(blocklist
+
+IPs,
+
+open
+
+ports
+
+for
+
+new
+
+services).
+
+
+●
+
+Authored
+
+25
+
+step
+‑
+by
+‑
+step
+
+knowledge
+‑
+base
+
+articles,
+
+boosting
+
+first
+‑
+call
+
+resolution
+
+10
+
+%.
+
+
+PROMOIMPRESOS
+
+–
+
+Mexico
+
+City
+
+
+Softwar e
+
+Developer
+
+Sep
+
+2019
+
+–
+
+Feb
+
+2023
+
+●
+
+Created
+
+a
+
+C#/WPF
+
+desktop
+
+app
+
+that
+
+automated
+
+order
+
+workflow ,
+
+cutting
+
+manual
+
+entry
+
+70
+
+%.
+
+
+●
+
+Patched
+
+a
+
+SQL
+‑
+injection
+
+flaw
+
+in
+
+a
+
+legacy
+
+PHP
+
+site
+
+and
+
+introduced
+
+Git
+
+version
+
+control.
+
+
+●
+
+Developed
+
+PowerShell
+
+backup
+
+scripts
+
+for
+
+SQL
+
+Server ,
+
+lowering
+
+RPO
+
+to
+
+15
+
+min.
+
+
+●
+
+Training
+
+of
+
+employees
+
+and
+
+creation
+
+of
+
+logins.
+
+●
+
+Configuration
+
+of
+
+Microsoft
+
+Active
+
+Directory
+
+
+Early
+
+Careers
+
+(condensed)
+
+
+●
+
+Maintenance
+
+Electrician
+
+–
+
+Pharmapack
+
+(2017
+‑
+2018)
+
+
+Education
+
+
+●
+
+B.S.
+
+Cybersecurity
+
+(Online),
+
+Universidad
+
+Utel
+
+—
+
+In
+
+progress,
+
+expected
+
+2028.
+
+
+
+Focus
+
+areas:
+
+network
+
+defense,
+
+cryptography ,
+
+security
+
+operations
+
+
+●
+
+B.S.
+
+Data
+
+Science,
+
+Universidad
+
+del
+
+Valle
+
+de
+
+México
+
+—
+
+Completed
+
+2
+
+years
+
+of
+
+coursework
+
+(4
+
+semesters),
+
+2025
+
+
+Focus
+
+areas:
+
+statistics,
+
+data
+
+visualization,
+
+Python,
+
+SQL,
+
+intro
+
+to
+
+machine
+
+learning.
+
+●
+
+B.S.
+
+Softwar e
+
+Engineering,
+
+Universidad
+
+del
+
+Valle
+
+de
+
+México
+
+—
+
+Completed
+
+2
+
+years
+
+of
+
+coursework
+
+(4
+
+semesters),
+
+2023
+
+—
+
+GPA:
+
+3.7
+
+
+
+Focus
+
+areas:
+
+algorithms,
+
+OOP
+
+(Java/Python/C#),
+
+databases,
+
+software
+
+architecture
+
+
+●
+
+A.S.
+
+Electr onics,
+
+Escuela
+
+Mexicana
+
+de
+
+Electricidad
+
+—
+
+Graduated
+
+Sep
+
+2019
+
+
+GPA:
+
+3.8
+
+
+Focus
+
+areas:
+
+digital
+
+systems,
+
+embedded
+
+programming,
+
+microcontrollers
+
+
+Languages
+
+
+Spanish
+
+(native)
+
+|
+
+English
+
+C1
+
+(CAE)
+
+|
+
+French
+
+A1</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="win hidden" id="win-projects" role="dialog" aria-label="Projects">
+      <div class="titlebar"><span class="tb-title">Projects</span><div class="tb-actions"><div class="btn min" data-min="#win-projects"></div><div class="btn max" data-max="#win-projects"></div><div class="btn close" data-close="#win-projects"></div></div></div>
+      <div class="content">
+        <div class="grid">
+          <div class="card">
+            <h4>cloudflare-lab</h4>
+            <p class="muted">Cloudflare Pages lab — deployment/test project.</p>
+            <p><a id="proj-cloudflare" href="https://cloudflare-lab-81v.pages.dev/" target="_blank">Open project</a></p>
+          </div>
+          <div class="card">
+            <h4>vt_batch</h4>
+            <p class="muted">Python tool to hash files and bulk-query VirusTotal for faster malware triage.</p>
+            <a href="https://github.com/jmartinez117/vt_batch" target="_blank">Source</a>
+          </div>
+          <div class="card">
+            <h4>log_pulse</h4>
+            <p class="muted">Mini log viewer parsing common firewall formats for quick IOC scanning.</p>
+            <a href="https://github.com/jmartinez117/log_pulse" target="_blank">Source</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="win hidden" id="win-terminal" role="dialog" aria-label="Terminal">
+      <div class="titlebar"><span class="tb-title">Terminal</span><div class="tb-actions"><div class="btn min" data-min="#win-terminal"></div><div class="btn max" data-max="#win-terminal"></div><div class="btn close" data-close="#win-terminal"></div></div></div>
+      <div class="content">
+        <div class="terminal" style="height:48vh;overflow:auto" id="term-out"></div>
+        <input id="term-in" class="input" placeholder="Type a command (try 'help')" />
+      </div>
+    </section>
+
+    <section class="win hidden" id="win-mousepad" role="dialog" aria-label="Mousepad">
+      <div class="titlebar"><span class="tb-title">Mousepad</span><div class="tb-actions"><div class="btn min" data-min="#win-mousepad"></div><div class="btn max" data-max="#win-mousepad"></div><div class="btn close" data-close="#win-mousepad"></div></div></div>
+      <div class="content">
+        <textarea id="mousepad-area" class="input" style="min-height:46vh" placeholder="Type notes here..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <button id="mousepad-save" class="taskbtn" type="button">Save (local)</button>
+          <button id="mousepad-load" class="taskbtn" type="button">Load</button>
+          <span id="mousepad-status" class="muted"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="win hidden" id="win-settings" role="dialog" aria-label="Settings">
+      <div class="titlebar"><span class="tb-title">Settings</span><div class="tb-actions"><div class="btn min" data-min="#win-settings"></div><div class="btn max" data-max="#win-settings"></div><div class="btn close" data-close="#win-settings"></div></div></div>
+      <div class="content">
         <div class="card">
-          <h4>vt_batch</h4>
-          <p class="muted">Python tool to hash files and bulk-query VirusTotal for faster malware triage.</p>
-          <a class="link" href="https://github.com/jmartinez117/vt_batch" target="_blank" rel="noopener">Source</a>
+          <h4>Theme</h4>
+          <label style="display:flex;align-items:center;gap:8px">
+            <input id="theme-toggle" type="checkbox"> Use alternate accent
+          </label>
         </div>
         <div class="card">
-          <h4>log_pulse</h4>
-          <p class="muted">Mini log viewer parsing common firewall formats for quick IOC scanning.</p>
-          <a class="link" href="https://github.com/jmartinez117/log_pulse" target="_blank" rel="noopener">Source</a>
+          <h4>About this site</h4>
+          <p class="muted">Static, single-file portfolio. No external scripts, no trackers, no inline event handlers. CSP with SHA‑256 allows this script only.</p>
         </div>
       </div>
+    </section>
+
+    <section class="win hidden" id="win-contact" role="dialog" aria-label="Contact">
+      <div class="titlebar"><span class="tb-title">Contact</span><div class="tb-actions"><div class="btn min" data-min="#win-contact"></div><div class="btn max" data-max="#win-contact"></div><div class="btn close" data-close="#win-contact"></div></div></div>
+      <div class="content">
+        <form action="https://formspree.io/f/your-id" method="POST">
+          <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+            <input type="text" name="name" placeholder="Your name" required class="input">
+            <input type="email" name="email" placeholder="Your email" required class="input">
+          </div>
+          <textarea name="message" placeholder="Your message" required class="input" style="margin-top:10px;min-height:120px"></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <button type="submit" class="taskbtn">Send</button>
+            <a href="mailto:ricardo.mtz.u117@gmail.com" target="_blank" class="taskbtn">Or email me directly</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Taskbar and helper -->
+    <div class="taskbar" aria-label="Taskbar">
+      <div id="tasks" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <div class="spacer"></div>
+      <div class="muted" style="padding-right:10px">© <span id="year"></span> Jesús R. Martínez Urrutia</div>
     </div>
-  </section>
 
-  <section class="win hidden" id="win-contact" role="dialog" aria-label="Contact window" style="left:200px;top:220px;">
-    <div class="titlebar"><span class="tb-title">Contact</span><div class="tb-actions"><div class="btn min" data-min="#win-contact"></div><div class="btn max" data-max="#win-contact"></div><div class="btn close" data-close="#win-contact"></div></div></div>
-    <div class="content">
-      <form action="https://formspree.io/f/your-id" method="POST">
-        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
-          <input type="text" name="name" placeholder="Your name" required style="padding:12px;border-radius:10px;background:#0c1122;border:1px solid #243259;color:var(--ink)">
-          <input type="email" name="email" placeholder="Your email" required style="padding:12px;border-radius:10px;background:#0c1122;border:1px solid #243259;color:var(--ink)">
-        </div>
-        <textarea name="message" placeholder="Your message" required style="margin-top:10px;min-height:120px;padding:12px;border-radius:10px;background:#0c1122;border:1px solid #243259;color:var(--ink);width:100%"></textarea>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-          <button type="submit" style="padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--ink)">Send</button>
-          <a class="link" href="mailto:ricardo.mtz.u117@gmail.com">Or email me directly</a>
-        </div>
-      </form>
+    <div class="center-intro">
+      <div class="inner">Click icons in the dock to open windows. Drag by the title bar. Minimize to the taskbar.</div>
     </div>
-  </section>
-
-  <!-- Taskbar -->
-  <div class="taskbar" aria-label="Taskbar">
-    <div id="tasks" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-    <div class="spacer"></div>
-    <div class="muted" style="padding-right:10px">© <span id="y"></span> Jesús R. Martínez Urrutia</div>
-  </div>
-
-  <div class="center-intro">
-    <div class="inner muted">Click icons in the dock to open windows. Drag by the title bar. Minimize to the taskbar.</div>
   </div>
 
   <script>
-    // Clock + year
-    function tick(){
-      const d=new Date();
-      document.getElementById('clock').textContent=d.toLocaleString(undefined,{hour:'2-digit',minute:'2-digit'});
-      document.getElementById('y').textContent=d.getFullYear();
-    }
-    setInterval(tick,1000); tick();
+  
+/* =========================
+   Minimal desktop/window manager + apps
+   ========================= */
+(() => {
+  'use strict';
 
-    // Simple window manager
-    let z=10; const qs=(s,el=document)=>el.querySelector(s);
-    const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
-    function bring(el){ el.style.zIndex=++z; }
-    function makeDraggable(win){
-      const bar=qs('.titlebar',win);
-      let sx=0, sy=0, ox=0, oy=0, dragging=false;
-      bar.addEventListener('mousedown',e=>{ dragging=true; bring(win); sx=e.clientX; sy=e.clientY; const r=win.getBoundingClientRect(); ox=r.left; oy=r.top; });
-      window.addEventListener('mousemove',e=>{ if(!dragging) return; win.style.left=(ox + e.clientX - sx)+'px'; win.style.top=(oy + e.clientY - sy)+'px'; });
-      window.addEventListener('mouseup',()=> dragging=false);
-      win.addEventListener('mousedown',()=>bring(win));
+  // Helper selectors
+  const qs = (s, el=document) => el.querySelector(s);
+  const qsa = (s, el=document) => Array.from(el.querySelectorAll(s));
+
+  // Prevent tabnabbing on all external links
+  qsa('a[target="_blank"]').forEach(a => { a.rel = "noopener noreferrer"; });
+
+  // Mexico City clock (top bar) using the proper IANA tz
+  function tick() {
+    const d = new Date();
+    const fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Mexico_City',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      year: 'numeric', month: 'short', day: '2-digit'
+    });
+    qs('#clock').textContent = fmt.format(d) + ' (Mexico City)';
+    qs('#year').textContent = String(d.getFullYear());
+  }
+  setInterval(tick, 1000); tick();
+
+  // Login screen → unlock desktop; purely visual (no network calls)
+  const login = qs('#login');
+  const desktop = qs('#desktop');
+  const loginBtn = qs('#login-btn');
+  loginBtn.addEventListener('click', () => {
+    // Simple "auth" gate: if a password is provided, hide the login.
+    // NOTE: This is NOT real authentication; it's a splash screen only.
+    const pw = qs('#password').value.trim();
+    if (pw.length >= 0) {
+      login.classList.add('hidden');
+      desktop.classList.remove('hidden');
+      localStorage.setItem('session', 'open');
     }
-    function minimize(sel){
-      const w=qs(sel); w.classList.add('hidden');
-      const t=qs('.tb-title',w).textContent;
-      const btn=document.createElement('button');
-      btn.className='taskbtn'; btn.textContent=t;
-      btn.onclick=()=>{ w.classList.remove('hidden'); bring(w); btn.remove(); };
-      qs('#tasks').appendChild(btn);
+  });
+  // If user already "logged in" this session, skip screen
+  if (localStorage.getItem('session') === 'open') {
+    login.classList.add('hidden');
+    desktop.classList.remove('hidden');
+  }
+
+  // Window manager (drag, focus, open/close/min/max)
+  let z = 10;
+  function bring(el){ el.style.zIndex = String(++z); }
+  function makeDraggable(win) {
+    const bar = qs('.titlebar', win);
+    let sx=0, sy=0, ox=0, oy=0, dragging=false;
+    bar.addEventListener('mousedown', (e) => {
+      dragging = true; bring(win);
+      sx = e.clientX; sy = e.clientY;
+      const r = win.getBoundingClientRect(); ox=r.left; oy=r.top;
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      win.style.left = (ox + e.clientX - sx) + 'px';
+      win.style.top  = (oy + e.clientY - sy) + 'px';
+    });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    win.addEventListener('mousedown', () => bring(win));
+  }
+  qsa('.win').forEach(makeDraggable);
+
+  function minimize(sel){
+    const w = qs(sel); if(!w) return;
+    w.classList.add('hidden');
+    const t = qs('.tb-title', w).textContent;
+    const btn = document.createElement('button');
+    btn.className = 'taskbtn'; btn.textContent = t;
+    btn.onclick = () => { w.classList.remove('hidden'); bring(w); btn.remove(); };
+    qs('#tasks').appendChild(btn);
+  }
+  function maximize(sel){
+    const w = qs(sel); if(!w) return;
+    if (w.dataset.maxed === '1') {
+      w.style.left='8vw'; w.style.top='80px';
+      w.style.width='84vw'; w.style.height='68vh';
+      w.dataset.maxed = '0';
+    } else {
+      w.style.left='2vw'; w.style.top='54px';
+      w.style.width='96vw'; w.style.height='78vh';
+      w.dataset.maxed = '1';
     }
-    function maximize(sel){
-      const w=qs(sel);
-      if(w.dataset.maxed==='1'){
-        w.style.width='min(920px, 86vw)'; w.style.height=''; w.style.left='80px'; w.style.top='86px'; w.dataset.maxed='0';
-      }else{
-        w.style.left='2vw'; w.style.top='60px'; w.style.width='96vw'; w.style.height='78vh'; w.dataset.maxed='1';
+    bring(w);
+  }
+  function closew(sel){
+    const w = qs(sel); if(!w) return;
+    w.remove();
+  }
+
+  // Bind titlebar controls and dock launchers
+  qsa('[data-open]').forEach(i => i.addEventListener('click', () => {
+    const sel = i.getAttribute('data-open'); const w = qs(sel);
+    if (w) { w.classList.remove('hidden'); bring(w); }
+  }));
+  qsa('[data-min]').forEach(b => b.addEventListener('click', () => minimize(b.getAttribute('data-min'))));
+  qsa('[data-max]').forEach(b => b.addEventListener('click', () => maximize(b.getAttribute('data-max'))));
+  qsa('[data-close]').forEach(b => b.addEventListener('click', () => closew(b.getAttribute('data-close'))));
+
+  // Mousepad (simple text editor) — content only lives in memory
+  const mousepadArea = qs('#mousepad-area');
+  qs('#mousepad-save').addEventListener('click', () => {
+    // Save to localStorage (kept in browser only)
+    localStorage.setItem('mousepad', mousepadArea.value);
+    qs('#mousepad-status').textContent = 'Saved locally.';
+  });
+  qs('#mousepad-load').addEventListener('click', () => {
+    mousepadArea.value = localStorage.getItem('mousepad') || '';
+    qs('#mousepad-status').textContent = 'Loaded from local storage.';
+  });
+
+  // Settings — toggle accent theme (static CSS vars)
+  const themeToggle = qs('#theme-toggle');
+  themeToggle.addEventListener('change', () => {
+    document.documentElement.dataset.theme = themeToggle.checked ? 'alt' : 'default';
+  });
+
+  // Terminal — minimal built-in commands (no eval, no network)
+  const termOut = qs('#term-out');
+  const termIn = qs('#term-in');
+  const commands = {
+    help: () => "Commands: help, whoami, date, projects, clear",
+    whoami: () => "jesus@nixos",
+    date: () => new Intl.DateTimeFormat('en-US', { timeZone: 'America/Mexico_City', dateStyle: 'full', timeStyle: 'long' }).format(new Date()),
+    projects: () => [
+      "- vt_batch — Python + VirusTotal (bulk hash scan)",
+      "- log_pulse — Log parser for IOC scanning",
+      "- cloudflare-lab — " + qs('#proj-cloudflare').href
+    ].join("\n"),
+    clear: () => { termOut.textContent = ""; return ""; }
+  };
+  function println(s){ termOut.textContent += (s ? s : "") + (s === "" ? "" : "\n"); termOut.scrollTop = termOut.scrollHeight; }
+  println("Type 'help' to see commands.");
+  termIn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const cmd = termIn.value.trim();
+      println("> " + cmd);
+      if (cmd in commands) {
+        const out = commands[cmd]();
+        if (out) println(out);
+      } else if (cmd.length) {
+        println("Unknown command. Type 'help'.");
       }
-      bring(w);
+      termIn.value = "";
     }
-    function closew(sel){ const w=qs(sel); w.remove(); }
+  });
 
-    // Bind buttons & icons
-    qsa('.win').forEach(w=>makeDraggable(w));
-    qsa('[data-open]').forEach(i=>i.addEventListener('click',()=>{ const sel=i.getAttribute('data-open'); const w=qs(sel); if(w){ w.classList.remove('hidden'); bring(w); } }));
-    qsa('[data-min]').forEach(b=>b.addEventListener('click',()=>minimize(b.getAttribute('data-min'))));
-    qsa('[data-max]').forEach(b=>b.addEventListener('click',()=>maximize(b.getAttribute('data-max'))));
-    qsa('[data-close]').forEach(b=>b.addEventListener('click',()=>closew(b.getAttribute('data-close'))));
+  // Resume view toggle: structured vs raw (verbatim from PDF)
+  const btnRaw = qs('#btn-raw');
+  const btnStruct = qs('#btn-struct');
+  const raw = qs('#resume-raw');
+  const struct = qs('#resume-struct');
+  btnRaw.addEventListener('click', () => { struct.classList.add('hidden'); raw.classList.remove('hidden'); });
+  btnStruct.addEventListener('click', () => { raw.classList.add('hidden'); struct.classList.remove('hidden'); });
+})();
+
   </script>
 </body>
 </html>
