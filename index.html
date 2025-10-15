@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jesús R. Martínez Urrutia — NixOS Desktop • Portfolio</title>
   <meta name="description" content="Interactive Linux desktop portfolio — responsive, password gate, draggable windows (About, Resume, Projects, Contact, Settings, Mousepad, Terminal). Mexico City clock.">
-  <!-- CSP: allow inline script so the login works after minimal edits -->
+  <!-- CSP kept permissive for inline script so login works reliably on GitHub Pages -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://brand.nixos.org https://upload.wikimedia.org; frame-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
   <meta http-equiv="Referrer-Policy" content="no-referrer">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -45,7 +45,7 @@ body{
 .status{display:flex;gap:10px;color:var(--muted);font-size:clamp(12px,1.4vw,14px)}
 .hidden{display:none !important}
 /* Login */
-.login{position:fixed;inset:0;display:grid;place-items:center;z-index:1500;background:linear-gradient(160deg, #08101f, #0b1830)}
+.login{position:fixed;inset:0;display:grid;place-items:center;z-index:1500;background:linear-gradient(160deg, #08101f, #0b1830);min-height:100svh}
 .loginbox{width:min(520px, 92vw);padding:22px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,.04), transparent), #0f1d38;border:1px solid var(--line); box-shadow:var(--shadow)}
 .loginbox h1{margin:0 0 6px 0;font-size:22px}
 .input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b142b;color:var(--ink)}
@@ -68,7 +68,7 @@ body{
 .content{padding:16px;overflow:auto}
 .terminal{background:#0a0f1e;border:1px solid #1b2442;border-radius:12px;padding:12px 14px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;font-size:14px;color:#cfe0ff}
 .prompt{color:var(--accent-2)}
-/* Make neofetch extra tidy inside the window */
+/* Neofetch tidy */
 #neofetch{font-size:13px; line-height:1.4; white-space:pre-wrap; word-wrap:break-word}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 .card{background:linear-gradient(180deg, rgba(255,255,255,.03), transparent), #0f1d38;border:1px solid var(--line);border-radius:14px;padding:16px}
@@ -84,15 +84,13 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 pre{white-space:pre-wrap;word-wrap:break-word; line-height:1.35; font-size:14px}
 .reduce-motion *{ transition:none !important; animation:none !important; }
 
-/* Responsive tweaks (kept) */
-@media (max-width:900px){
-  .win{left:5vw;width:90vw}
-}
+/* Responsive tweaks */
+@media (max-width:900px){ .win{left:5vw;width:90vw} }
 @media (max-width:700px){
   .dock{inset:auto 50% 68px auto;transform:translateX(50%);grid-auto-flow:column}
   .icon{width:52px;height:52px}.icon svg{width:26px;height:26px}
-  .win{top:70px;left:2vw;width:96vw;max-height:calc(100dvh - 120px)}
-  @supports not (height: 100dvh){ .win{ max-height:calc(100vh - 120px); } }
+  .win{top:70px;left:2vw;width:96vw;max-height:calc(100svh - 120px)}
+  @supports not (height: 100svh){ .win{ max-height:calc(var(--vhpx, 100vh) - 120px); } }
   .title{font-size:clamp(14px,3.5vw,18px)}
   .status{font-size:clamp(12px,3.1vw,16px)}
 }
@@ -145,10 +143,10 @@ pre{white-space:pre-wrap;word-wrap:break-word; line-height:1.35; font-size:14px}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h5"/></svg>
       </div><div class="label">Mousepad</div>
       <div class="icon" data-open="#win-settings" role="button" tabindex="0" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V22a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H2a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.26 1.3.73 1.77.48.47 1.12.73 1.77.73H22a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
       </div><div class="label">Settings</div>
       <div class="icon" data-open="#win-contact" role="button" tabindex="0" title="Contact">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16v12H5.17 L4 17.17V4z"/><path d="m22 6-10 7L2 6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h16v12H5.17L4 17.17V4z"/><path d="m22 6-10 7L2 6"/></svg>
       </div><div class="label">Contact</div>
     </div>
 
@@ -173,10 +171,10 @@ pre{white-space:pre-wrap;word-wrap:break-word; line-height:1.35; font-size:14px}
       <div class="titlebar"><span class="tb-title">Resume</span><div class="tb-actions"><div class="btn min" data-min="#win-resume"></div><div class="btn max" data-max="#win-resume"></div><div class="btn close" data-close="#win-resume"></div></div></div>
       <div class="content">
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-          <button id="btn-struct" class="taskbtn" type="button">Structured</button>
-          <button id="btn-raw" class="taskbtn" type="button">Plain text</button>
-          <button id="btn-pdf" class="taskbtn" type="button">PDF viewer</button>
-          <a class="taskbtn" href="resume.pdf" target="_blank">Open PDF (new tab)</a>
+          <button id="btn-struct" class="taskbtn active" type="button" aria-controls="resume-struct" aria-pressed="true">Structured</button>
+          <button id="btn-raw" class="taskbtn" type="button" aria-controls="resume-raw" aria-pressed="false">Plain text</button>
+          <button id="btn-pdf" class="taskbtn" type="button" aria-controls="resume-pdf" aria-pressed="false">PDF viewer</button>
+          <a class="taskbtn" href="resume.pdf" target="_blank" rel="noopener">Open PDF (new tab)</a>
         </div>
         <div id="resume-struct">
           <h3>Experience</h3>
@@ -191,38 +189,11 @@ pre{white-space:pre-wrap;word-wrap:break-word; line-height:1.35; font-size:14px}
               <li>Assist with firewall rule changes; authored 25 KB articles.</li>
             </ul>
           </div>
-          <div class="card">
-            <strong>Software Developer — PROMOIMPRESOS</strong>
-            <div class="muted">Sep 2019 – Feb 2023 · Mexico City</div>
-            <ul>
-              <li>C#/WPF app automated order workflow (−70% manual entry).</li>
-              <li>Fixed SQL injection in legacy PHP; introduced Git.</li>
-              <li>PowerShell backups for SQL Server (RPO 15 min).</li>
-              <li>Active Directory: training, logins, configuration.</li>
-            </ul>
-          </div>
-          <h3>Skills</h3>
-          <div class="chips">
-            <span class="chip">Splunk</span><span class="chip">Nessus</span><span class="chip">FortiGate</span><span class="chip">Wireshark</span>
-            <span class="chip">Burp Suite</span><span class="chip">nmap</span><span class="chip">Python</span><span class="chip">PowerShell</span>
-            <span class="chip">C#/.NET</span><span class="chip">C++</span><span class="chip">React.js</span><span class="chip">SQL</span>
-            <span class="chip">AWS</span><span class="chip">Azure Sentinel</span><span class="chip">Docker</span><span class="chip">NixOS</span>
-          </div>
-          <h3>Education & Certifications</h3>
-          <div class="grid">
-            <div class="card"><strong>CompTIA Security+</strong><div class="muted">Issued Mar 2025 — Code: ERCVSQ6QZF411L3X</div></div>
-            <div class="card"><strong>B.S. Cybersecurity — Universidad Utel</strong><div class="muted">In progress — expected 2028.</div></div>
-            <div class="card"><strong>B.S. Data Science — Universidad del Valle de México</strong><div class="muted">2 years completed (2025).</div></div>
-            <div class="card"><strong>B.S. Software Engineering — Universidad del Valle de México</strong><div class="muted">2 years completed (2023) — GPA 3.7.</div></div>
-            <div class="card"><strong>A.S. Electronics — Escuela Mexicana de Electricidad</strong><div class="muted">Grad Sep 2019 — GPA 3.8.</div></div>
-          </div>
-          <p class="muted">Languages: Spanish (native) · English C1 (CAE) · French A1</p>
         </div>
-        <div id="resume-raw" class="hidden">
-          <pre></pre>
-        </div>
+        <div id="resume-raw" class="hidden"><pre></pre></div>
         <div id="resume-pdf" class="hidden">
-          <iframe src="resume.pdf" title="Resume PDF" style="width:100%;height:70vh;border:1px solid var(--line);border-radius:10px;background:#0b142b"></iframe>
+          <iframe id="pdf-frame" src="" title="Resume PDF" style="width:100%;height:70vh;border:1px solid var(--line);border-radius:10px;background:#0b142b"></iframe>
+          <p class="muted" id="pdf-fallback" style="display:none;margin-top:8px">If the PDF viewer doesn't load on your device, <a href="resume.pdf" target="_blank" rel="noopener">open the file in a new tab</a>.</p>
         </div>
       </div>
     </section>
@@ -329,23 +300,16 @@ pre{white-space:pre-wrap;word-wrap:break-word; line-height:1.35; font-size:14px}
   </div>
 
   <script>
-/* NixOS Desktop v6 — minimal changes: always-ask login + neofetch expand + button-safe dragging */
+/* NixOS Desktop v7 — fixes: login, resume tabs (raw/PDF), mobile viewport */
 'use strict';
 const qs=(s,e=document)=>e.querySelector(s), qsa=(s,e=document)=>Array.from(e.querySelectorAll(s));
 qsa('a[target="_blank"]').forEach(a=>{a.rel='noopener noreferrer'});
 
-// ----- Utility: viewport-safe positioning -----
-function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
-function keepInView(win){
-  const r = win.getBoundingClientRect();
-  const pad = 10;
-  const maxL = window.innerWidth - r.width - pad;
-  const maxT = window.innerHeight - r.height - 72; // allow for taskbar/topbar
-  win.style.left = clamp(r.left, pad, Math.max(pad, maxL)) + 'px';
-  win.style.top  = clamp(r.top,  54,  Math.max(54,  maxT)) + 'px';
-}
+// ----- Visual viewport CSS var for mobile full-height -----
+function setVh(){ const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight; document.documentElement.style.setProperty('--vhpx', vh + 'px'); }
+setVh(); addEventListener('resize', setVh); if (window.visualViewport) visualViewport.addEventListener('resize', setVh);
 
-// ----- Clock (Mexico City, 12/24h toggle) -----
+// ----- Clock (Mexico City) -----
 function updateClock(){
   const d = new Date();
   const use24 = localStorage.getItem('clock24') === '1';
@@ -353,120 +317,65 @@ function updateClock(){
     timeZone:'America/Mexico_City', hour:'2-digit', minute:'2-digit', second:'2-digit',
     year:'numeric', month:'short', day:'2-digit', hour12: !use24
   });
-  qs('#clock').textContent = fmt.format(d) + ' (Mexico City)';
-  qs('#year').textContent = String(d.getFullYear());
+  const el=qs('#clock'); if (el) el.textContent = fmt.format(d) + ' (Mexico City)';
+  const y=qs('#year'); if (y) y.textContent = String(d.getFullYear());
 }
 setInterval(updateClock, 1000); updateClock();
 
-// ----- Login (password: always ask; no persistence) -----
+// ----- Login (always required) -----
 const REQUIRED_PW='HireMe2025!';
 const login=qs('#login'), desktop=qs('#desktop');
 const loginBtn=qs('#login-btn'), pwInput=qs('#password'), loginError=qs('#login-error');
 function unlock(){ login.classList.add('hidden'); desktop.classList.remove('hidden'); }
 function tryUnlock(){
-  const pw = pwInput.value.trim();
+  const pw = (pwInput.value||'').trim();
   if (pw===REQUIRED_PW){ unlock(); }
-  else {
-    loginError.textContent='Incorrect password.'; loginError.style.opacity='1';
-    qs('.loginbox').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:250});
-  }
+  else { loginError.textContent='Incorrect password.'; loginError.style.opacity='1'; qs('.loginbox').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:250}); }
 }
 loginBtn.addEventListener('click', tryUnlock);
 pwInput.addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
-// NOTE: removed previous auto-unlock via localStorage to always require password
 
-// ----- Window manager (pointer events, re-openable) -----
-let z=10;
-function bring(el){ el.style.zIndex=String(++z); }
+// ----- Window manager (pointer events; don't steal clicks on controls) -----
+let z=10; function bring(el){ el.style.zIndex=String(++z); }
+function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+function keepInView(win){ const r=win.getBoundingClientRect(), pad=10; const maxL=innerWidth - r.width - pad; const maxT=innerHeight - r.height - 72; win.style.left = clamp(r.left, pad, Math.max(pad, maxL))+'px'; win.style.top = clamp(r.top, 54, Math.max(54, maxT))+'px'; }
 function makeDraggable(win){
-  const bar = qs('.titlebar', win);
-  let sx=0, sy=0, ox=0, oy=0, dragging=false;
-  bar.style.touchAction='none'; // allow pointer drag on mobile
-
-  // NEW: don't start drag when clicking the window controls
+  const bar=qs('.titlebar', win); if(!bar) return; let sx=0, sy=0, ox=0, oy=0, dragging=false; bar.style.touchAction='none';
   function isControlTarget(e){ const t=e.target; return t.classList.contains('btn') || t.closest('.tb-actions'); }
-
-  function onDown(e){
-    if (isControlTarget(e)) return;
-    dragging=true; bring(win);
-    const p = ('clientX' in e)? e : e.touches[0];
-    sx=p.clientX; sy=p.clientY;
-    const r=win.getBoundingClientRect(); ox=r.left; oy=r.top;
-    if (bar.setPointerCapture && e.pointerId!==undefined) bar.setPointerCapture(e.pointerId);
-  }
-  function onMove(e){
-    if(!dragging) return;
-    const p = ('clientX' in e)? e : (e.touches? e.touches[0] : null); if(!p) return;
-    win.style.left = (ox + p.clientX - sx) + 'px';
-    win.style.top  = (oy + p.clientY - sy) + 'px';
-  }
-  function onUp(){ if(!dragging) return; dragging=false; keepInView(win); }
-
-  if (window.PointerEvent){
-    bar.addEventListener('pointerdown', onDown);
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-  } else {
-    bar.addEventListener('mousedown', onDown);
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-    bar.addEventListener('touchstart', onDown, {passive:true});
-    window.addEventListener('touchmove', onMove, {passive:false});
-    window.addEventListener('touchend', onUp);
-  }
+  function down(e){ if(isControlTarget(e)) return; dragging=true; bring(win); const p=('clientX' in e)? e : e.touches[0]; sx=p.clientX; sy=p.clientY; const r=win.getBoundingClientRect(); ox=r.left; oy=r.top; }
+  function move(e){ if(!dragging) return; const p=('clientX' in e)? e : (e.touches? e.touches[0] : null); if(!p) return; win.style.left=(ox + p.clientX - sx)+'px'; win.style.top=(oy + p.clientY - sy)+'px'; }
+  function up(){ if(!dragging) return; dragging=false; keepInView(win); }
+  if (window.PointerEvent){ bar.addEventListener('pointerdown', down); addEventListener('pointermove', move); addEventListener('pointerup', up); }
+  else { bar.addEventListener('mousedown', down); addEventListener('mousemove', move); addEventListener('mouseup', up); bar.addEventListener('touchstart', down, {passive:true}); addEventListener('touchmove', move, {passive:false}); addEventListener('touchend', up); }
   win.addEventListener('mousedown', ()=> bring(win));
 }
 qsa('.win').forEach(makeDraggable);
-function show(sel){ const w=qs(sel); if(!w) return; w.classList.remove('hidden'); bring(w); if (window.innerWidth<700){ maximize(sel); } }
-function hide(sel){ const w=qs(sel); if(!w) return; w.classList.add('hidden'); }
-function minimize(sel){
-  hide(sel);
-  const w=qs(sel); const t=qs('.tb-title',w).textContent;
-  const b=document.createElement('button'); b.className='taskbtn'; b.textContent=t;
-  b.onclick=()=>{ show(sel); b.remove(); };
-  qs('#tasks').appendChild(b);
-}
-function maximize(sel){
-  const w=qs(sel); if(!w) return;
-  if(w.dataset.maxed==='1'){
-    w.style.left='8vw'; w.style.top='80px'; w.style.width='84vw'; w.style.height='var(--win-h,68vh)'; w.dataset.maxed='0';
-  } else {
-    w.style.left='2vw'; w.style.top='54px';
-    w.style.width='96vw';
-    w.style.height='calc(var(--vh, 100vh) - 100px)'; // mobile friendly
-    w.dataset.maxed='1';
-  }
-  bring(w);
-}
+function show(sel){ const w=qs(sel); if(!w) return; w.classList.remove('hidden'); bring(w); if (innerWidth<700){ maximize(sel); } }
+function hide(sel){ qs(sel)?.classList.add('hidden'); }
+function minimize(sel){ hide(sel); const w=qs(sel); if(!w) return; const t=qs('.tb-title',w).textContent; const b=document.createElement('button'); b.className='taskbtn'; b.textContent=t; b.onclick=()=>{ show(sel); b.remove(); }; qs('#tasks').appendChild(b); }
+function maximize(sel){ const w=qs(sel); if(!w) return; if(w.dataset.maxed==='1'){ w.style.left='8vw'; w.style.top='80px'; w.style.width='84vw'; w.style.height='var(--win-h,68vh)'; w.dataset.maxed='0'; } else { w.style.left='2vw'; w.style.top='54px'; w.style.width='96vw'; w.style.height='calc(100svh - 110px)'; if(!CSS.supports('height','100svh')){ w.style.height='calc(var(--vhpx, 100vh) - 110px)'; } w.dataset.maxed='1'; } bring(w); }
 function closew(sel){ hide(sel); }
-qsa('[data-open]').forEach(i=>i.addEventListener('click',()=>{
-  const sel=i.getAttribute('data-open'); const w=qs(sel);
-  if (w && w.classList.contains('hidden')) show(sel); else if (w) bring(w);
-}));
-qsa('[data-min]').forEach(b=>b.addEventListener('click',()=>minimize(b.getAttribute('data-min'))));
-qsa('[data-max]').forEach(b=>b.addEventListener('click',()=>maximize(b.getAttribute('data-max'))));
-qsa('[data-close]').forEach(b=>b.addEventListener('click',()=>closew(b.getAttribute('data-close'))));
-window.addEventListener('resize', ()=> qsa('.win:not(.hidden)').forEach(keepInView));
+qsa('[data-open]').forEach(i=>{ i.addEventListener('click',()=>{ const sel=i.getAttribute('data-open'); const w=qs(sel); if (w && w.classList.contains('hidden')) show(sel); else if (w) bring(w); }); i.addEventListener('keydown',(e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); i.click(); }}); });
+qsa('[data-min]').forEach(b=> b.addEventListener('click', ()=> minimize(b.getAttribute('data-min')) ));
+qsa('[data-max]').forEach(b=> b.addEventListener('click', ()=> maximize(b.getAttribute('data-max')) ));
+qsa('[data-close]').forEach(b=> b.addEventListener('click', ()=> closew(b.getAttribute('data-close')) ));
+addEventListener('resize', ()=> qsa('.win:not(.hidden)').forEach(keepInView));
 
-// Mobile 100vh fix: compute CSS var --vh
-function setVh(){ document.documentElement.style.setProperty('--vh', window.innerHeight + 'px'); }
-setVh(); window.addEventListener('resize', setVh);
-
-// ----- About: expanded neofetch (kept tidy) -----
+// ----- About: expanded neofetch (clean inside terminal) -----
 function updateNeofetch(){
-  const res = `${window.innerWidth}x${window.innerHeight}`;
+  const res = `${innerWidth}x${innerHeight}`;
   const theme = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
   const lines = [
     'jesus@nixos',
     '---------------------------',
     'OS: NixOS 24.05 (Uakari)',
     'Host: Web Portfolio',
-    'DE: Nix Desktop (web)',   // new
-    'WM: CanvasWM',           // new
+    'DE: Nix Desktop (web)',
+    'WM: CanvasWM',
     'Kernel: HTML5 1.0 (JS)',
     `Resolution: ${res}`,
     `Theme: Nix — accent ${theme}`,
-    'Icons: Nerd (sim)',      // new
+    'Icons: Nerd (sim)',
     'Packages: 0 (simulated)',
     'Shell: pseudo-shell',
     'Terminal: browser console',
@@ -474,97 +383,135 @@ function updateNeofetch(){
     'GPU: Imagination x∞',
     'Memory: Plenty (client-side)'
   ];
-  qs('#neofetch').textContent = lines.join('\\n');
+  const nf=qs('#neofetch'); if (nf) nf.textContent = lines.join('\n');
 }
-window.addEventListener('resize', updateNeofetch);
-updateNeofetch();
+addEventListener('resize', updateNeofetch); updateNeofetch();
 
 // ----- Terminal -----
 const out=qs('#term-out'), tin=qs('#term-in');
-function println(s){ out.textContent+=(s?s:'')+(s===''?'':'\\n'); out.scrollTop=out.scrollHeight; }
-function printlnHTML(html){ const div=document.createElement('div'); div.innerHTML=html; out.appendChild(div); out.appendChild(document.createTextNode('\\n')); out.scrollTop=out.scrollHeight; }
-const cmds={
-  help:()=> "Commands: help, whoami, date, projects, clear",
-  whoami:()=> "jesus@nixos",
-  date:()=> new Intl.DateTimeFormat('en-US',{ timeZone:'America/Mexico_City', dateStyle:'full', timeStyle:'long', hour12: localStorage.getItem('clock24')!=='1' }).format(new Date()),
-  projects:()=> { printlnHTML('<ul style="margin:6px 0 0 18px">'
+function println(s){ if(!out) return; out.textContent+=(s??'')+((s??'')===''?'':'\n'); out.scrollTop=out.scrollHeight; }
+function printlnHTML(html){ if(!out) return; const div=document.createElement('div'); div.innerHTML=html; out.appendChild(div); out.appendChild(document.createTextNode('\n')); out.scrollTop=out.scrollHeight; }
+if (out && tin){
+  const cmds={
+    help:()=> "Commands: help, whoami, date, projects, clear",
+    whoami:()=> "jesus@nixos",
+    date:()=> new Intl.DateTimeFormat('en-US',{ timeZone:'America/Mexico_City', dateStyle:'full', timeStyle:'long', hour12: localStorage.getItem('clock24')!=='1' }).format(new Date()),
+    projects:()=> { printlnHTML('<ul style="margin:6px 0 0 18px">'
       + '<li><a href="https://github.com/jmartinez117/vt_batch" target="_blank" rel="noopener noreferrer">vt_batch</a> — Python + VirusTotal</li>'
       + '<li><a href="https://github.com/jmartinez117/log_pulse" target="_blank" rel="noopener noreferrer">log_pulse</a> — Log parser</li>'
       + '<li><a href="https://cloudflare-lab-81v.pages.dev/" target="_blank" rel="noopener noreferrer">cloudflare-lab</a> — Cloudflare Pages lab</li>'
       + '</ul>'); return ''; },
-  clear:()=> { out.textContent=''; return ''; }
-};
-println("Type 'help' to see commands.");
-tin.addEventListener('keydown', e=>{
-  if(e.key==='Enter'){
-    const c=tin.value.trim();
-    println('> ' + c);
-    if (c in cmds){ const r = cmds[c](); if (r) println(r); }
-    else if (c.length){ println("Unknown command. Type 'help'."); }
-    tin.value='';
+    clear:()=> { out.textContent=''; return ''; }
+  };
+  println("Type 'help' to see commands.");
+  tin.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){
+      const c=tin.value.trim();
+      println('> ' + c);
+      if (c in cmds){ const r = cmds[c](); if (r) println(r); }
+      else if (c.length){ println("Unknown command. Type 'help'."); }
+      tin.value='';
+    }
+  });
+}
+
+// ----- Resume: tab toggle + raw + PDF viewer -----
+const btnStruct=qs('#btn-struct'), btnRaw=qs('#btn-raw'), btnPdf=qs('#btn-pdf');
+const viewStruct=qs('#resume-struct'), viewRaw=qs('#resume-raw'), viewPdf=qs('#resume-pdf');
+const pdfFrame=qs('#pdf-frame'), pdfFallback=qs('#pdf-fallback');
+
+function setResumeTab(tab){
+  // buttons active state
+  [btnStruct,btnRaw,btnPdf].forEach(b=> b && b.classList.remove('active'));
+  if(tab==='struct'){ btnStruct?.classList.add('active'); }
+  if(tab==='raw'){ btnRaw?.classList.add('active'); }
+  if(tab==='pdf'){ btnPdf?.classList.add('active'); }
+  // views
+  viewStruct.classList.toggle('hidden', tab!=='struct');
+  viewRaw.classList.toggle('hidden', tab!=='raw');
+  viewPdf.classList.toggle('hidden', tab!=='pdf');
+  if(tab==='raw'){ loadRawResume(); }
+  if(tab==='pdf'){ ensurePdfViewer(); }
+}
+
+function generatePlainTextFromStruct(){
+  const src = viewStruct.cloneNode(true);
+  // remove decorative classes
+  src.querySelectorAll('[class]').forEach(el=> el.removeAttribute('class'));
+  // add simple bullets for li
+  const lines=[];
+  function walk(node, depth=0){
+    if(node.nodeType===Node.TEXT_NODE){
+      const txt=node.textContent.replace(/\s+/g,' ').trim();
+      if(txt) lines.push(' '.repeat(depth*2)+txt);
+      return;
+    }
+    if(node.tagName==='LI'){ lines.push(' '.repeat(depth*2)+'• '+node.textContent.trim()); return; }
+    if(/H[1-6]/.test(node.tagName)){ lines.push('\n'+node.textContent.trim().toUpperCase()); return; }
+    Array.from(node.childNodes).forEach(n=>walk(n, depth+(node.tagName==='UL'||node.tagName==='OL'?1:0)));
   }
-});
+  walk(src);
+  return lines.join('\n').replace(/\n{3,}/g,'\n\n');
+}
 
-// ----- Resume verbatim cleanup (unchanged) -----
-(function moreVerbatimCleanup(){
-  const pre = qs('#resume-raw pre'); if(!pre) return;
-  let t = pre.textContent;
-  t = t.replace(/\u00AD/g, '').replace(/ ?-\s*\n\s*/g, '-').replace(/\n{3,}/g,'\n\n');
-  pre.textContent = t;
-})();
+async function loadRawResume(){
+  const pre = qs('#resume-raw pre');
+  if (!pre) return;
+  // Try resume.txt first; if not present, generate from structured DOM
+  try{
+    const res = await fetch('resume.txt', {cache:'no-store'});
+    if(res.ok){ pre.textContent = await res.text(); cleanupPre(pre); return; }
+  }catch(e){}
+  pre.textContent = generatePlainTextFromStruct(); cleanupPre(pre);
+}
 
-// ----- Settings (unchanged) -----
+function cleanupPre(pre){
+  pre.textContent = pre.textContent.replace(/\u00AD/g,'').replace(/ ?-\s*\n\s*/g,'-').replace(/\n{3,}/g,'\n\n');
+}
+
+function ensurePdfViewer(){
+  if(!pdfFrame) return;
+  // set/re-set src for some mobile browsers
+  pdfFrame.src = 'resume.pdf#toolbar=0&navpanes=0&statusbar=0';
+  // best-effort load fallback
+  pdfFallback.style.display='none';
+  pdfFrame.addEventListener('error', ()=>{ pdfFallback.style.display='block'; }, {once:true});
+}
+
+btnStruct?.addEventListener('click', ()=> setResumeTab('struct'));
+btnRaw?.addEventListener('click', ()=> setResumeTab('raw'));
+btnPdf?.addEventListener('click', ()=> setResumeTab('pdf'));
+
+// Default to Structured on open
+setResumeTab('struct');
+
+// ----- Mousepad local save/load -----
+const mp=qs('#mousepad-area'), mps=qs('#mousepad-status');
+qs('#mousepad-save')?.addEventListener('click', ()=>{ localStorage.setItem('mousepad', mp.value); mps.textContent='Saved.'; setTimeout(()=>mps.textContent='',1500); });
+qs('#mousepad-load')?.addEventListener('click', ()=>{ mp.value = localStorage.getItem('mousepad')||''; mps.textContent='Loaded.'; setTimeout(()=>mps.textContent='',1500); });
+
+// ----- Settings -----
 const bright=qs('#range-brightness'); const contrast=qs('#range-contrast');
 const themePick=qsa('input[name="accent"]'); const clockToggle=qs('#toggle-24'); const motionToggle=qs('#toggle-motion');
-
 function applySettingsFromStorage(){
-  const b=parseFloat(localStorage.getItem('brightness')||'1');
-  const c=parseFloat(localStorage.getItem('contrast')||'1');
+  const b=parseFloat(localStorage.getItem('brightness')||'1'); const c=parseFloat(localStorage.getItem('contrast')||'1');
   document.documentElement.style.setProperty('--brightness', String(b));
   document.documentElement.style.setProperty('--contrast', String(c));
-  if (bright) bright.value = String(Math.round(b*100));
-  if (contrast) contrast.value = String(Math.round(c*100));
-  const accent = localStorage.getItem('accent') || 'nixos';
-  themePick.forEach(r=>{ r.checked = (r.value===accent); });
-  setAccent(accent);
+  if (bright) bright.value = String(Math.round(b*100)); if (contrast) contrast.value = String(Math.round(c*100));
+  const accent = localStorage.getItem('accent') || 'nixos'; themePick.forEach(r=>{ r.checked = (r.value===accent); }); setAccent(accent);
   const clock24 = localStorage.getItem('clock24')==='1'; if (clockToggle) clockToggle.checked = clock24;
-  const reduce = localStorage.getItem('reduceMotion')==='1'; if (motionToggle) motionToggle.checked = reduce;
-  document.documentElement.classList.toggle('reduce-motion', reduce);
+  const reduce = localStorage.getItem('reduceMotion')==='1'; if (motionToggle) motionToggle.checked = reduce; document.documentElement.classList.toggle('reduce-motion', reduce);
   updateClock(); updateNeofetch();
 }
-function setAccent(val){
-  if (val==='ubuntu'){ document.documentElement.style.setProperty('--accent','#E95420'); document.documentElement.style.setProperty('--accent-2','#F4A261'); }
-  else if (val==='kali'){ document.documentElement.style.setProperty('--accent','#268BD2'); document.documentElement.style.setProperty('--accent-2','#6EC1F2'); }
-  else { document.documentElement.style.setProperty('--accent','#5277C3'); document.documentElement.style.setProperty('--accent-2','#7EBAE4'); }
-}
-if (bright) bright.addEventListener('input', ()=>{
-  const v = Math.max(50, Math.min(130, parseInt(bright.value,10)))/100;
-  document.documentElement.style.setProperty('--brightness', String(v));
-  localStorage.setItem('brightness', String(v));
-});
-if (contrast) contrast.addEventListener('input', ()=>{
-  const v = Math.max(70, Math.min(130, parseInt(contrast.value,10)))/100;
-  document.documentElement.style.setProperty('--contrast', String(v));
-  localStorage.setItem('contrast', String(v));
-});
-themePick.forEach(r=> r.addEventListener('change', ()=>{
-  setAccent(r.value); localStorage.setItem('accent', r.value); updateNeofetch();
-}));
-if (clockToggle) clockToggle.addEventListener('change', ()=>{
-  localStorage.setItem('clock24', clockToggle.checked ? '1' : '0'); updateClock();
-});
-if (motionToggle) motionToggle.addEventListener('change', ()=>{
-  localStorage.setItem('reduceMotion', motionToggle.checked ? '1' : '0');
-  document.documentElement.classList.toggle('reduce-motion', motionToggle.checked);
-});
+function setAccent(val){ if (val==='ubuntu'){ document.documentElement.style.setProperty('--accent','#E95420'); document.documentElement.style.setProperty('--accent-2','#F4A261'); } else if (val==='kali'){ document.documentElement.style.setProperty('--accent','#268BD2'); document.documentElement.style.setProperty('--accent-2','#6EC1F2'); } else { document.documentElement.style.setProperty('--accent','#5277C3'); document.documentElement.style.setProperty('--accent-2','#7EBAE4'); } }
+if (bright) bright.addEventListener('input', ()=>{ const v=Math.max(50, Math.min(130, parseInt(bright.value,10)))/100; document.documentElement.style.setProperty('--brightness', String(v)); localStorage.setItem('brightness', String(v)); });
+if (contrast) contrast.addEventListener('input', ()=>{ const v=Math.max(70, Math.min(130, parseInt(contrast.value,10)))/100; document.documentElement.style.setProperty('--contrast', String(v)); localStorage.setItem('contrast', String(v)); });
+themePick.forEach(r=> r.addEventListener('change', ()=>{ setAccent(r.value); localStorage.setItem('accent', r.value); updateNeofetch(); }));
+if (clockToggle) clockToggle.addEventListener('change', ()=>{ localStorage.setItem('clock24', clockToggle.checked ? '1' : '0'); updateClock(); });
+if (motionToggle) motionToggle.addEventListener('change', ()=>{ localStorage.setItem('reduceMotion', motionToggle.checked ? '1' : '0'); document.documentElement.classList.toggle('reduce-motion', motionToggle.checked); });
 
 const resetBtn = qs('#btn-reset');
-if (resetBtn) resetBtn.addEventListener('click', ()=>{
-  localStorage.removeItem('brightness'); localStorage.removeItem('contrast');
-  localStorage.removeItem('accent'); localStorage.removeItem('clock24'); localStorage.removeItem('reduceMotion');
-  qsa('.win').forEach(w=>{ w.style.left='8vw'; w.style.top='90px'; w.style.width='84vw'; w.style.height='var(--win-h,68vh)'; w.dataset.maxed='0'; });
-  applySettingsFromStorage();
-});
+if (resetBtn) resetBtn.addEventListener('click', ()=>{ localStorage.removeItem('brightness'); localStorage.removeItem('contrast'); localStorage.removeItem('accent'); localStorage.removeItem('clock24'); localStorage.removeItem('reduceMotion'); qsa('.win').forEach(w=>{ w.style.left='8vw'; w.style.top='90px'; w.style.width='84vw'; w.style.height='var(--win-h,68vh)'; w.dataset.maxed='0'; }); applySettingsFromStorage(); });
 
 applySettingsFromStorage();
   </script>
