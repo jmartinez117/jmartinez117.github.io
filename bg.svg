@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0a1226"/>
+      <stop offset="60%" stop-color="#0a1830"/>
+      <stop offset="100%" stop-color="#0b1c33"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g)"/>
+  <!-- stars -->
+  <g fill="#cfe0ff" opacity="0.6">
+    <circle cx="100" cy="100" r="1.5"/><circle cx="220" cy="180" r="1.2"/><circle cx="360" cy="90" r="1.4"/>
+    <circle cx="540" cy="160" r="1.1"/><circle cx="720" cy="110" r="1.5"/><circle cx="880" cy="70" r="1.2"/>
+    <circle cx="1030" cy="150" r="1.4"/><circle cx="1200" cy="100" r="1.3"/><circle cx="1400" cy="130" r="1.1"/>
+    <circle cx="1500" cy="90" r="1.2"/><circle cx="600" cy="60" r="1.1"/><circle cx="300" cy="60" r="1.3"/>
+  </g>
+  <!-- mountains -->
+  <path d="M0 700 L160 540 L220 600 L350 500 L460 630 L560 520 L710 650 L800 560 L900 640 L1000 520 L1120 650 L1250 540 L1400 660 L1600 520 L1600 900 L0 900 Z" fill="#0b1f3b"/>
+  <path d="M0 760 L140 640 L230 720 L340 620 L480 760 L600 630 L740 760 L840 660 L940 760 L1040 660 L1180 780 L1300 660 L1420 760 L1600 660 L1600 900 L0 900 Z" fill="#0c2242"/>
+</svg>
